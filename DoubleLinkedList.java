@@ -2,6 +2,7 @@ package DataStructures;
 
 /**
  * Created by Cipson on 2017-04-11.
+ * List with pointers to next and previous element
  */
 public class DoubleLinkedList<T> {
 
@@ -26,15 +27,18 @@ public class DoubleLinkedList<T> {
         return head == null;
     }
 
+    //Insert element on the beginning of the list
     public void insert(T v){
-            Node temp = head;
-            head = new Node(v);
-            head.next = temp;
-            if(head.next != null)
-                head.next.previous = head;
-            head.previous = null;
+        Node temp = head;
+        head = new Node(v);
+        head.next = temp;
+        if(head.next != null)
+            head.next.previous = head;
+        head.previous = null;
     }
 
+    //Return and remove first element in the list
+    //If list is empty return null
     public T remove(){
         if(!isEmpty()) {
             Node temp = head;

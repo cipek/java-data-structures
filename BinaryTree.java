@@ -8,6 +8,7 @@ import java.util.Stack;
 
 /**
  * Created by Cipson on 2017-04-17.
+ * Simple unbalanced binary search tree
  */
 
 public class BinaryTree {
@@ -48,7 +49,8 @@ public class BinaryTree {
             root = new Node(v);
         else{
             Node current = root;
-            Node parent = null;
+            Node parent;
+            //Search position to insert new element
             while(current != null){
                 parent = current;
                 if(current.value <= v){
@@ -69,8 +71,9 @@ public class BinaryTree {
         }
     }
 
+    //Search for given value and return node with given value
+    //If there isn't, returns null
     public Node search(int value){
-
         Node current = root;
 
         while(current != null){
@@ -117,6 +120,7 @@ public class BinaryTree {
         return current;
     }
 
+    //Find min value from given node
     public int minValue(Node current){
         int minV = current.value;
         while (current.left != null){
@@ -126,6 +130,7 @@ public class BinaryTree {
         return minV;
     }
 
+    //Find max value from given node
     public int maxValue(Node current){
         int maxV = current.value;
         while (current.right != null){
@@ -135,7 +140,7 @@ public class BinaryTree {
         return maxV;
     }
 
-
+    //Find min value in the whole tree
     public int minValue(){
         Node current = root;
         int minV = current.value;
@@ -146,6 +151,7 @@ public class BinaryTree {
         return minV;
     }
 
+    //Find max value in the whole tree
     public int maxValue(){
         Node current = root;
         int maxV = current.value;
@@ -209,8 +215,9 @@ public class BinaryTree {
         }
     }
 
-
-    public ArrayList<Node> BreadthFirstSearch(int id){
+    //Search for element in breath first pattern
+    //Returns visited nodes
+    public ArrayList<Node> breadthFirstSearch(int id){
         if(isEmpty())
             return null;
 
@@ -238,7 +245,9 @@ public class BinaryTree {
 
     }
 
-    public static ArrayList<Node> DreadthFirstSearch(Node root, int id){
+    //Search for element in depth first pattern
+    //Returns visited nodes
+    public static ArrayList<Node> depthFirstSearch(Node root, int id){
 
         if(root==null)
             return null;
@@ -294,9 +303,9 @@ public class BinaryTree {
 
     }
 
+    //Prints all paths in the tree- from root to leaves
     public void printAllPaths(){
         printAllPathsRec(root, "");
-
     }
 
     private void printAllPathsRec(Node node, String s){
@@ -313,6 +322,7 @@ public class BinaryTree {
 
     }
 
+    //Calculates sum of all elements in the tree
     public int findSum(){
         return findSumRec(root);
     }

@@ -7,8 +7,6 @@ import java.util.Stack;
 
 /**
  * Created by Cipson on 2017-10-27.
- */
-/*
 1. Every node is either red or black.
 2. The root is black.
 3. Every leaf (NIL) is black.
@@ -22,7 +20,7 @@ public class RedBlackTree {
     protected Node root = nil; //used as the pointer to nth
 
     public class Node{
-        int value, size;
+        int value, rank; //Size is not used in RedBlackTree. Only by RBTreeRank and indicates how many nodes are below given node
         Node left, right, parent;
         boolean black;
 
@@ -40,22 +38,32 @@ public class RedBlackTree {
         }
     }
 
+    //Right node of the 'x' node becomes parent and 'x' is its left child
+    //
+    //   x          y
+    //    \   ->   /
+    //     y      x
     protected void leftRotate(Node x){
         Node y = x.right;
-        x.right = y.left;
+        x.right = y.left; //turn y's left subtree into x's right subtree
         if(y.left != nil)
             y.left.parent = x;
-        y.parent = x.parent;
+        y.parent = x.parent; //link x's parent to y
         if(x.parent == nil)
             root = y;
         else if(x == x.parent.left)
             x.parent.left = y;
         else
             x.parent.right = y;
-        y.left = x;
+        y.left = x; //put x on y's left
         x.parent = y;
     }
 
+    //Left node of the 'x' node becomes parent and 'x' is its right child
+    //
+    //    x      y
+    //   /   ->   \
+    //  y          x
     protected void rightRotate(Node x){
         Node y = x.left;
         x.left = y.right;
@@ -72,10 +80,12 @@ public class RedBlackTree {
         x.parent = y;
     }
 
+    //Insert new element
     public void insert(int value){
-        Node y = nil;
+        Node y = nil; //parent of the new node
         Node x = root;
         Node z = new Node(value);
+        //Insert new element to empty spot- unbalance at this point
         while(x != nil){
             y= x;
             if(z.value < x.value)
@@ -84,6 +94,7 @@ public class RedBlackTree {
                 x= x.right;
         }
         z.parent = y;
+        //Link parent to new node
         if(y == nil)
             root = z;
         else if(z.value < y.value)
@@ -96,28 +107,33 @@ public class RedBlackTree {
         insertFixup(z);
     }
 
+    //Balance tree after insertion
     protected void insertFixup(Node z){
         while(z.parent!= nil && !z.parent.black){ //Is red
             if(z.parent == z.parent.parent.left){
                 Node y = z.parent.parent.right;
-                if(y!= nil && !y.black){ //case 1
+                //case 1- node z and its parent are red ->
+                //-> recolor parent to black and move z pointer up the tree
+                if(y!= nil && !y.black){
                     z.parent.black = true;
                     y.black = true;
                     z.parent.parent.black = false;
                     z = z.parent.parent;
                 }
                 else {
-                    if (z == z.parent.right) { //case 2
+                    //case 2 - if z is right child of its parent do left rotate on z's parent
+                    if (z == z.parent.right) {
                         z = z.parent;
                         leftRotate(z);
 
                     }
-                    z.parent.black = true; //case 3
+                    //case 3- z has to be left child. Recolor nodes and do right rotate
+                    z.parent.black = true;
                     z.parent.parent.black = false;
                     rightRotate(z.parent.parent);
                 }
             }
-            else if(z.parent == z.parent.parent.right){//copy of first if with left and right exchange
+            else if(z.parent == z.parent.parent.right){ //same as 'if' clause, with 'left' and 'right' exchange
                 Node y = z.parent.parent.left;
                 if(y!= nil && !y.black){ //case 1
                     z.parent.black = true;
@@ -141,11 +157,13 @@ public class RedBlackTree {
 
     }
 
+
     public void delete(int v){
         Node z = search(root, v);
         Node y = z;
         Node x;
-        boolean originalColor = y.black;
+        boolean originalColor = y.black; //stores ordinal color of the node
+        //If it has just one child, replace them
         if(z.left == nil ){
             x = z.right;
             transplant(z, z.right);
@@ -175,6 +193,7 @@ public class RedBlackTree {
 
     }
 
+    //Find node with given value 'v'
     protected Node search(Node current, int v){
         while(current != nil) {
             if (current.value == v)
@@ -187,27 +206,32 @@ public class RedBlackTree {
         return nil;
     }
 
+    //Fix tree (balance) after deletion
     protected void deleteFixup(Node x){
         while(x != root && x.black){
             if(x == x.parent.left){
                 Node w = x.parent.right;
+                //Case 1- if right child of x's parent is red
                 if(!w.black){
                     w.black = true;
                     x.parent.black = false;
                     leftRotate(x.parent);
                     w = x.parent.right;
                 }
+                //Case 2- if both children are black, change w to red
                 if(w.left.black && w.right.black){
                     w.black = false;
                     x = x.parent;
                 }
                 else{
+                    //Case 3- if just right child is black
                     if(w.right.black){
                         w.left.black = true;
                         w.black = false;
                         rightRotate(w);
                         w = x.parent.right;
                     }
+                    //Case 4
                     w.black = x.parent.black;
                     x.parent.black = true;
                     w.right.black = true;
@@ -257,6 +281,7 @@ public class RedBlackTree {
         v.parent = u.parent;
     }
 
+    //Find min element from given node
     protected Node minNode(Node current){
         Node minV = current;
         while (current.left != nil){
@@ -267,6 +292,7 @@ public class RedBlackTree {
     }
 
 
+    //Print tree level by level
     public void printTree() {
 
         Queue<Node> currentLevel = new LinkedList<Node>();

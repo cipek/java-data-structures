@@ -1,10 +1,10 @@
 package DataStructures;
 
-import java.util.*;
 import java.util.LinkedList;
 
 /**
  * Created by Cipson on 2017-10-30.
+ * Structure similar to RedBlack tree, but nodes contain rank- number of nodes below given node
  */
 public class RBTreeRank extends RedBlackTree{
 
@@ -14,7 +14,7 @@ public class RBTreeRank extends RedBlackTree{
     }
 
     private int selectRec(Node x, int i){
-        int r = x.left.size + 1;
+        int r = x.left.rank + 1;
         if(i == r)
             return x.value;
         else if(i<r)
@@ -23,25 +23,27 @@ public class RBTreeRank extends RedBlackTree{
             return selectRec(x.right, i-r);
     }
 
+    //Return rank of a node with value 'x'
     public int rank(int x){
         Node node = search(root, x);
-        int r = node.left.size + 1;
+        int r = node.left.rank + 1;
         Node y = node;
         while(y!= root){
             if(y == y.parent.right)
-                r = r + y.parent.left.size + 1;
+                r = r + y.parent.left.rank + 1;
             y = y.parent;
         }
         return r;
     }
 
+    //Similar to RBTree but includes rank value. The same for all remain methods
     public void insert(int value){
         Node y = nil;
         Node x = root;
         Node z = new Node(value);
         while(x != nil){
             y= x;
-            x.size++;
+            x.rank++;
             if(z.value < x.value)
                 x = x.left;
             else
@@ -57,7 +59,7 @@ public class RBTreeRank extends RedBlackTree{
         z.left = nil;
         z.right = nil;
         z.black = false;
-        z.size = 1;
+        z.rank = 1;
         insertFixup(z);
     }
 
@@ -72,31 +74,31 @@ public class RBTreeRank extends RedBlackTree{
                     z = z.parent.parent;
                 }
                 else {
-                    if (z == z.parent.right) { //case 2
+                    if (z == z.parent.right) {
                         z = z.parent;
                         leftRotate(z);
 
                     }
-                    z.parent.black = true; //case 3
+                    z.parent.black = true;
                     z.parent.parent.black = false;
                     rightRotate(z.parent.parent);
                 }
             }
-            else if(z.parent == z.parent.parent.right){//copy of first if with left and right exchange
+            else if(z.parent == z.parent.parent.right){
                 Node y = z.parent.parent.left;
-                if(y!= nil && !y.black){ //case 1
+                if(y!= nil && !y.black){
                     z.parent.black = true;
                     y.black = true;
                     z.parent.parent.black = false;
                     z = z.parent.parent;
                 }
                 else {
-                    if (z == z.parent.left) { //case 2
+                    if (z == z.parent.left) {
                         z = z.parent;
                         rightRotate(z);
 
                     }
-                    z.parent.black = true; //case 3
+                    z.parent.black = true;
                     z.parent.parent.black = false;
                     leftRotate(z.parent.parent);
                 }
@@ -129,14 +131,14 @@ public class RBTreeRank extends RedBlackTree{
             else{
                 transplant(y, y.right);
                 y.right = z.right;
-                y.size = z.size;
+                y.rank = z.rank;
                 y.right.parent = y;
             }
             transplant(z, y);
             y.left = z.left;
             y.left.parent = y;
             y.black = z.black;
-            y.size = z.size;
+            y.rank = z.rank;
         }
         if(originalColor)
             deleteFixup(x);
@@ -204,7 +206,7 @@ public class RBTreeRank extends RedBlackTree{
 
     private Node searchDelete(Node current, int v){
         while(current != nil) {
-            current.size--;
+            current.rank--;
             if (current.value == v)
                 return current;
             else if (current.value > v)
@@ -229,8 +231,8 @@ public class RBTreeRank extends RedBlackTree{
             x.parent.right = y;
         y.left = x;
         x.parent = y;
-        y.size = x.size;
-        x.size = x.left.size + x.right.size + 1;
+        y.rank = x.rank;
+        x.rank = x.left.rank + x.right.rank + 1;
     }
 
     protected void rightRotate(Node x){
@@ -247,8 +249,8 @@ public class RBTreeRank extends RedBlackTree{
             x.parent.right = y;
         y.right = x;
         x.parent = y;
-        y.size = x.size;
-        x.size = x.left.size + x.right.size + 1;
+        y.rank = x.rank;
+        x.rank = x.left.rank + x.right.rank + 1;
     }
 
 
@@ -272,7 +274,7 @@ public class RBTreeRank extends RedBlackTree{
                     System.out.print("B ");
                 else
                     System.out.print("R ");
-                System.out.print(currentNode.size + " , ");
+                System.out.print(currentNode.rank + " , ");
             }
             System.out.println();
             currentLevel = nextLevel;

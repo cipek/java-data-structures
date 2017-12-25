@@ -5,18 +5,21 @@ import java.util.List;
 
 /**
  * Created by Cipson on 2017-10-27.
+ * Simple hash table with constant basic rank
  */
 public class HashTable{
 
-    private int tableSize = 3;
-    private List<ArrayList<Integer>> table = new ArrayList<ArrayList<Integer>>(tableSize);
+    private int tableSize = 10; //Table rank. Edit as needed
+    private List<ArrayList<Integer>> table = new ArrayList<ArrayList<Integer>>(tableSize); //List of lists
 
     public HashTable(){
+        //Initialize all lists
         for (int i=0; i<tableSize;i++) {
             table.add(i, new ArrayList<Integer>());
         }
     }
 
+    //The simplest hash function using table rank and modulo operator
     private int hashFunction(int key){
         return key % tableSize;
     }

@@ -5,7 +5,7 @@ package DataStructures;
  */
 public class Queue<T> {
 
-    Node last, first;//first in the queue, first added, point
+    Node last, first;
 
     public class Node{
         T value;
@@ -20,6 +20,7 @@ public class Queue<T> {
         return first == null;
     }
 
+    //Add element to the end of the queue
     public void enqueue(T v){
         if(first == null){
             first =  new Node(v);
@@ -33,6 +34,7 @@ public class Queue<T> {
         }
     }
 
+    //Remove and return first element in the queue
     public T dequeue(){
         Node temp = first;
         first = first.next;

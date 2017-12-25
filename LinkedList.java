@@ -33,6 +33,7 @@ public class LinkedList<T> {
         first.next = temp;
     }
 
+    //Return value if exist. Null if there isn't given value
     public T delete(){
         if(!isEmpty()) {
             Node temp = first;
@@ -42,13 +43,18 @@ public class LinkedList<T> {
         return null;
     }
 
+    //Return value if exist. Null if there isn't given value
     public T search(T key){
         Node x = first;
         while(x!= null & x.value != key)
             x = x.next;
-        return x.value;
+        if(x == null)
+            return null;
+        else
+            return x.value;
     }
 
+    //Reverse whole list
     public void reverseList(){
         Node previous = null;
         Node current = first;
@@ -62,10 +68,11 @@ public class LinkedList<T> {
         first = previous;
     }
 
+    //Reverse first half of the list
     public void reverseHalfList(){
         Node previous = null;
         Node current = first;
-        Node next = null;
+        Node next;
         Node fast = first;
         Node start = first;
         while(fast != null){
@@ -84,6 +91,7 @@ public class LinkedList<T> {
         first = previous;
     }
 
+    //Print middle element of the list
     public void printMiddle() {
         Node slow_ptr = first;
         Node fast_ptr = first;
@@ -108,6 +116,7 @@ public class LinkedList<T> {
         System.out.println();
     }
 
+    //Remove duplicates from the list
     public void removeDuplicates(){
         //value, position
         Hashtable table = new Hashtable();
@@ -126,7 +135,9 @@ public class LinkedList<T> {
 
     }
 
-    public void returnKElementFromTHEnd(int k){
+    //Removes give number of elements from the end of the list
+    //Recursion approach
+    public void returnKElementFromTheEnd(int k){
         Node n = first;
         kElementRec(first, k);
     }
@@ -143,6 +154,8 @@ public class LinkedList<T> {
 
     }
 
+    //Moves elements with smaller value than x to the front
+    //and bigger elements to the end of the list
     public void partitionListAroundXValue(int x){
 
         Node n = first;
@@ -181,20 +194,25 @@ public class LinkedList<T> {
         first = smallerFirst;
     }
 
-    public boolean isPalidrome(){
+    //Checks if the the elements in the list form the palindrome
+    public boolean isPalindrome(){
 
+        //Stack is used because of its LIFO design
         Stack<T> half = new Stack<>();
         Node slow = first;
         Node fast = first;
+        //Finds the middle of the list and store first half in the stack
         while(fast != null && fast.next != null){
             half.push(slow.value);
             slow = slow.next;
             fast = fast.next.next;
         }
 
+        //In case list has odd number of elements
         if(fast!= null)
             slow = slow.next;
 
+        //Compares first nd second half of the list
         while(slow!= null){
             T temp = half.pop();
             if(!slow.value.toString().equals(temp.toString()))
