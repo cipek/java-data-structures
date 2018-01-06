@@ -124,7 +124,7 @@ public class BinaryTree {
     public int minValue(Node current){
         int minV = current.value;
         while (current.left != null){
-            minV = root.left.value;
+            minV = current.left.value;
             current = current.left;
         }
         return minV;
@@ -134,7 +134,7 @@ public class BinaryTree {
     public int maxValue(Node current){
         int maxV = current.value;
         while (current.right != null){
-            maxV = root.right.value;
+            maxV = current.right.value;
             current = current.right;
         }
         return maxV;
@@ -145,7 +145,7 @@ public class BinaryTree {
         Node current = root;
         int minV = current.value;
         while (current.left != null){
-            minV = root.left.value;
+            minV = current.left.value;
             current = current.left;
         }
         return minV;
@@ -156,7 +156,7 @@ public class BinaryTree {
         Node current = root;
         int maxV = current.value;
         while (current.right != null){
-            maxV = root.right.value;
+            maxV = current.right.value;
             current = current.right;
         }
         return maxV;
