@@ -6,6 +6,7 @@ package DataStructures;
 public class Stack<T> {
 
     Node first;
+    Node min;
 
     public class Node{
         T value;
@@ -17,6 +18,9 @@ public class Stack<T> {
         first = new Node();
         first.value = v;
         first.next = current;
+        if(min == null)
+            min = new Node();
+
     }
 
     public T pop(){

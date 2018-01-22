@@ -1,7 +1,6 @@
 package DataStructures;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Queue;
 import java.util.LinkedList;
 import java.util.Stack;
@@ -36,9 +35,12 @@ public class BinaryTree {
         }
     }
 
+
     public BinaryTree(){
         root =null;
     }
+
+    public Node getRoot(){return root;}
 
     public boolean isEmpty(){
         return root==null;
@@ -332,6 +334,169 @@ public class BinaryTree {
             return 0;
         else
             return node.value + findSumRec(node.left) + findSumRec(node.right);
+    }
+
+    public boolean isBalanced(){
+        if(checkHeight(root) != -1)
+            return true;
+        else
+            return false;
+    }
+
+    //-1 means it is not balanced
+    private int checkHeight(Node current){
+        if(current == null)
+            return 0;
+
+        int right = checkHeight(current.right);
+        if(right == -1)
+            return -1;
+
+        int left = checkHeight(current.left);
+        if(left == -1)
+            return -1;
+
+        int diff = Math.abs(left - right);
+        if(diff > 1)
+            return -1;
+        else
+            return Math.max(left, right) + 1;
+
+    }
+
+    //Creates balanced tree from the ascending array
+    public void creteTreeFromArray(int[] array){
+        root = creteTreeFromArrayRec(array, 0, array.length - 1 );
+    }
+
+    private Node creteTreeFromArrayRec(int[] array, int start, int end){
+        if(start > end)
+            return null;
+
+        int mid = (end + start)/2;
+        Node temp = new Node(array[mid]);
+        temp.left = creteTreeFromArrayRec(array, start, mid - 1);
+        temp.right = creteTreeFromArrayRec(array, mid + 1, end);
+
+        return temp;
+    }
+
+    public void printAllLevels(){
+        ArrayList<ArrayList<Integer>> lists = new ArrayList<>();
+        printAllLevels(root, lists, 0);
+        for (ArrayList<Integer> list:
+             lists) {
+            for (Integer x:
+                 list) {
+                System.out.print(x + ",");
+            }
+            System.out.print("\n");
+        }
+    }
+
+    private void printAllLevels(Node node, ArrayList<ArrayList<Integer>> lists, int level){
+        if(node == null)
+            return;
+
+        ArrayList<Integer> list = null;
+        if(lists.size() == level){
+            list = new ArrayList<>();
+            lists.add(list);
+        }
+        else{
+            list = lists.get(level);
+        }
+        list.add(node.getValue());
+
+        printAllLevels(node.left, lists, level+1);
+        printAllLevels(node.right, lists, level+1);
+    }
+
+    //Checks if the tree is a binary search tree
+    public boolean checkBST(){
+        return checkBST(root, Integer.MIN_VALUE, Integer.MAX_VALUE);
+    }
+
+    private boolean checkBST(Node n, int min, int max){
+        if(n== null)
+            return true;
+
+        if(n.getValue() < min || n.getValue() > max)
+            return false;
+
+        if(!checkBST(n.getLeft(), min, n.getValue()) ||
+                !checkBST(n.getRight(), n.getValue(), max))
+            return false;
+
+        return true;
+    }
+
+    public int getCommonAncestor(int x, int y){
+        return getCommonAncestor(root, x, y);
+    }
+
+    private boolean checkSide(Node current, int search){
+        if(current == null)
+            return false;
+        if(current.getValue() == search)
+            return true;
+
+        return checkSide(current.left, search) || checkSide(current.right, search);
+    }
+
+    private int getCommonAncestor(Node current, int x, int y){
+        if(current == null)
+            return Integer.MIN_VALUE;
+        if(current.getValue() == x || current.getValue() == y)
+            return current.getValue();
+
+        boolean is_x_on_left = checkSide(current.left, x);
+        boolean is_y_on_left = checkSide(current.left, y);
+
+        if(is_x_on_left != is_y_on_left)
+            return current.getValue();
+
+        if(is_x_on_left)
+            return getCommonAncestor(current.getLeft(), x, y);
+        else
+            return getCommonAncestor(current.getRight(), x ,y);
+
+    }
+
+    //Checks if t2 is the subtree of current root
+    public boolean containsSubtree(BinaryTree t2){
+        if(t2.getRoot() == null)
+            return true;
+
+        return firstMatch(root, t2.getRoot());
+    }
+
+    //Looks for values match
+    private boolean firstMatch(Node t1, Node t2){
+        if(t1 == null)
+            return false;
+        //If find match, check the rest of the tree
+        if(t1.getValue() == t2.getValue())
+            if(checkMatch(t1, t2))
+                return true;
+
+        return (firstMatch(t1.getLeft(), t2) || firstMatch(t1.getRight(), t2));
+    }
+
+    private boolean checkMatch(Node t1, Node t2){
+        //If both empty nothing left in the subtree
+        if(t1 == null && t2 == null)
+            return true;
+
+        //if one, not both are empty
+        if(t1 == null || t2 == null)
+            return false;
+
+        //Doesn't match
+        if(t1.getValue() != t2.getValue())
+            return false;
+
+        return checkMatch(t1.getLeft(), t2.getLeft()) && checkMatch(t1.getRight(), t2.getRight());
     }
 
 }
